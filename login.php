@@ -109,11 +109,11 @@ margin: 30px;
           <form>
             <div class="form-group">
               <label class="form-control-label">Email</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" name="email" placeholder="your email">
             </div>
                 <div class="form-group">
                   <label class="form-control-label">Password</label>
-                  <input type="password" class="form-control">
+                  <input type="password" class="form-control" name="password" placeholder="your password">
                 </div>
                 <div class="col-12 login-btm login-button justify-content-center d-flex" style="gap: 15px;">
                   <button type="submit" class="btn btn-outline-primary">login</button>
