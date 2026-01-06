@@ -1,5 +1,5 @@
 <?php
-class database {
+class Database {
     private static $instance = null;
     private $connection;
     private $host = "Localhost";
@@ -18,7 +18,7 @@ class database {
 
     public static function getInstance(){
         if(self::$instance == null){
-            self::$instance = new database();
+            self::$instance = new Database();
         }
         return self::$instance;
     }

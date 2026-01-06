@@ -1,7 +1,38 @@
+<?php
+session_start();
+require 'user.php';
+require './config/database.php';
+
+use App\User;
+
+$db = Database::getInstance()->getConnection();
+$user = new User($db);
+
+$error = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if ($user->login($email, $password)) {
+
+        if ($_SESSION['role'] === "host") {
+            header("Location: dashboard_host.php");
+        } else {
+            header("Location: rentals.php");
+        }
+        exit;
+    }
+
+    $error = "Email ou mot de passe incorrect.";
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Webleb</title>
+  <title>Login</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Bootstrap CSS v5.2.1 -->
@@ -106,21 +137,21 @@ margin: 30px;
           Login
         </div>
         <div class="col-lg-12 login-form">
-          <form>
-            <div class="form-group">
-              <label class="form-control-label">Email</label>
-              <input type="text" class="form-control" name="email" placeholder="your email">
-            </div>
-                <div class="form-group">
-                  <label class="form-control-label">Password</label>
-                  <input type="password" class="form-control" name="password" placeholder="your password">
-                </div>
-                <div class="col-12 login-btm login-button justify-content-center d-flex" style="gap: 15px;">
-                  <button type="submit" class="btn btn-outline-primary">login</button>
-                  <a href="index.php" class="btn btn-outline-primary" role="button">create account</a>
-                </div>
-            </div>
-            </form>
+              <form method="POST" action="">
+        <div class="form-group">
+            <label class="form-control-label">Email</label>
+            <input type="text" class="form-control" name="email" placeholder="your email">
+        </div>
+        <div class="form-group">
+            <label class="form-control-label">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="your password">
+        </div>
+        <div class="col-12 login-btm login-button justify-content-center d-flex" style="gap: 15px;">
+            <button type="submit" class="btn btn-outline-primary">Login</button>
+            <a href="index.php" class="btn btn-outline-primary" role="button">Create account</a>
+        </div>
+    </form>
+
           </div>
         </div>
       </div>

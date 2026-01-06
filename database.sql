@@ -1,5 +1,7 @@
 CREATE DATABASE if NOT EXISTS kari;
 
+DROP DATABASE kari;
+
 use kari;
 
 -- Users table
@@ -7,11 +9,23 @@ CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    phone VARCHAR(20),
-    role ENUM('traveler', 'host', 'admin') DEFAULT 'traveler' NOT NULL,
+    name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- roles table
+CREATE TABLE roles (
+    id int PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- User_roles table
+CREATE TABLE user_roles (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
 -- Homes table (rentals)
@@ -71,3 +85,20 @@ CREATE TABLE reviews (
     
     UNIQUE KEY unique_review (reservation_id)
 );
+
+use kari ;
+
+insert into roles (name) values 
+('admin'),
+('host'),
+('traveler');
+
+
+SELECT * FROM homes;
+ALTER TABLE homes ADD COLUMN image_url VARCHAR(255) DEFAULT NULL;
+
+
+ALTER TABLE reservations
+ADD CONSTRAINT chk_dates CHECK (check_out > check_in);
+
+

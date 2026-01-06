@@ -1,7 +1,64 @@
+<?php
+require 'user.php';
+require './config/database.php';
+
+use App\User;
+
+// If your config file exposes $db directly, keep it.
+// If it exposes Database singleton, uncomment the next line:
+$db = Database::getInstance()->getConnection();
+
+$user = new User($db);
+
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Basic validation
+    if (empty($_POST['username']) || empty($_POST['email']) || empty($_POST['password'])) {
+        $errors[] = "All fields are required.";
+    }
+
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    if (strlen($_POST['password']) < 6) {
+        $errors[] = "Password must be at least 6 characters.";
+    }
+
+    if (empty($errors)) {
+
+        // Map form fields to User::register()
+        $data = [
+            'username'     => $_POST['username'],
+            'email'    => $_POST['email'],
+            'password' => $_POST['password'],
+            'role'     => $_POST['role']
+        ];
+
+
+        if ($user->register($data)) {
+            header("Location: login.php?registered=1");
+            exit;
+        }
+
+        $errors[] = "Registration failed. Try again.";
+    }
+}
+?>
+
+
+
+?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Webleb</title>
+  <title>Rigister</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Bootstrap CSS v5.2.1 -->
@@ -106,7 +163,15 @@ margin: 30px;
           Sign Up
         </div>
         <div class="col-lg-12 login-form">
-          <form>
+          <?php if (!empty($errors)) : ?>
+    <ul style="color:#ff6b6b; padding:10px;">
+        <?php foreach ($errors as $e): ?>
+            <li><?= htmlspecialchars($e) ?></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+          <form method="POST" action="">
             <div class="form-group">
               <label class="form-control-label">Username</label>
               <input type="text" class="form-control" name="username" placeholder="username">
@@ -118,6 +183,14 @@ margin: 30px;
                 <div class="form-group">
                   <label class="form-control-label">Password</label>
                   <input type="password" class="form-control" name="password" placeholder="password">
+                </div>
+                <div class="form-group">
+                  <label class="form-control-label">Role</label>
+                  <select name="role" class="form-control" style="background-color:#1A2226;border:none;border-bottom:2px solid #0DB8DE;border-radius:0;color:#ECF0F5;padding:10px 12px;appearance:none;-webkit-appearance:none;-moz-appearance:none;">
+                      <option value="traveler">Traveler</option>
+                    <option value="host">Host</option>
+                    <option value="admin">Admin</option>
+                  </select>
                 </div>
                 <div class="col-12 login-btm login-button justify-content-center d-flex" style="gap: 15px;">
                   <button type="submit" class="btn btn-outline-primary">Register</button>
