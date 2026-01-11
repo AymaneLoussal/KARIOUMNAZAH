@@ -6,7 +6,7 @@ require 'rentail.php';
 use App\Rental;
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'host') {
-    header("Location: ../../login.php");
+    header("Location: ./login.php");
     exit;
 }
 
@@ -18,7 +18,6 @@ $id = (int)($_GET['id'] ?? 0);
 $hostId = $_SESSION['user_id'];
 $currentRental = $rental->findById($id);
 
-// Check ownership
 if (!$currentRental || $currentRental['host_id'] != $hostId) {
     die("Rental not found or access denied.");
 }
