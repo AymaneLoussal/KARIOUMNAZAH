@@ -6,7 +6,7 @@ require 'rentail.php';
 use App\Rental;
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'host') {
-    header("Location: ../../login.php");
+    header("Location: login.php");
     exit;
 }
 
