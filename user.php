@@ -20,22 +20,18 @@ class User
         $this->id = null;
     }
 
-    /* ==========================
-       Register new user
-       ========================== */
     public function register(array $data): bool
     {
         $this->email = trim($data['email']);
         $this->name  = trim($data['username']);
         $password    = $data['password'];
-        $roleName    = $data['role']; // traveler | host | admin
+        $roleName    = $data['role']; 
 
         $this->password_hash = password_hash($password, PASSWORD_BCRYPT);
 
         $this->db->beginTransaction();
 
         try {
-            // 1️⃣ Insert into users
             $stmt = $this->db->prepare("
                 INSERT INTO users (email, password_hash, name)
                 VALUES (:email, :password_hash, :name)
@@ -49,7 +45,6 @@ class User
 
             $userId = (int) $this->db->lastInsertId();
 
-            // 2️⃣ Get role id
             $stmtRole = $this->db->prepare("
                 SELECT id FROM roles WHERE name = :name LIMIT 1
             ");
@@ -63,7 +58,6 @@ class User
 
             $roleId = (int)$role['id'];
 
-            // 3️⃣ Assign role to user
             $stmtAssign = $this->db->prepare("
                 INSERT INTO user_roles (user_id, role_id)
                 VALUES (:user_id, :role_id)
@@ -84,9 +78,6 @@ class User
         }
     }
 
-    /* ==========================
-       Find user by email
-       ========================== */
     public function findByEmail(string $email): ?array
     {
         $query = "
@@ -106,9 +97,6 @@ class User
         return $user ?: null;
     }
 
-    /* ==========================
-       Login user
-       ========================== */
     public function login(string $email, string $password): bool
 {
     $user = $this->findByEmail($email);
@@ -121,13 +109,11 @@ class User
         return false;
     }
 
-    // Hydrate object
     $this->id    = (int)$user['id'];
     $this->email = $user['email'];
-    $this->name  = $user['name'];      // <-- was missing
-    $this->role  = $user['role'] ?? 'traveler'; // <-- was missing
+    $this->name  = $user['name'];      
+    $this->role  = $user['role'] ?? 'traveler'; 
 
-    // Start session if not started
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -140,9 +126,6 @@ class User
 }
 
 
-    /* ==========================
-       Logout user
-       ========================== */
     public function logout(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -153,9 +136,6 @@ class User
         session_destroy();
     }
 
-    /* ==========================
-       Update profile
-       ========================== */
     public function updateProfile(int $id, array $data): bool
     {
         $query = "
@@ -174,9 +154,6 @@ class User
         ]);
     }
 
-    /* ==========================
-       Get user role
-       ========================== */
     public function getRole(): string
     {
         return $this->role;
