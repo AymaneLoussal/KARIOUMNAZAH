@@ -1,6 +1,5 @@
 CREATE DATABASE if NOT EXISTS kari;
 
-DROP DATABASE kari;
 
 use kari;
 
@@ -100,5 +99,12 @@ ALTER TABLE homes ADD COLUMN image_url VARCHAR(255) DEFAULT NULL;
 
 ALTER TABLE reservations
 ADD CONSTRAINT chk_dates CHECK (check_out > check_in);
+use kari;
+ALTER TABLE users 
+ADD COLUMN is_active TINYINT(1) DEFAULT 1;
+
+ALTER TABLE homes 
+ADD COLUMN is_active TINYINT(1) DEFAULT 1;
+
 
 
