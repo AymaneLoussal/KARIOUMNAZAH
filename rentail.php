@@ -89,14 +89,13 @@ class Rental {
         $params[':max_price'] = $criteria['max_price'];
     }
 
-    // ---- Pagination ----
     $offset = ($page - 1) * $limit;
 
     $sql .= " ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
 
     $stmt = $this->db->prepare($sql);
 
-    // Bind numeric values manually
+    
     foreach ($params as $k => $v) {
         $stmt->bindValue($k, $v);
     }
