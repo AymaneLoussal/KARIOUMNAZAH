@@ -6,7 +6,7 @@ use PDO;
 
 use Exception;
 
-class booking {
+class Booking {
      private PDO $db;
 
      public function __construct(PDO $db){
@@ -97,4 +97,41 @@ class booking {
             $stmt->execute([$homeId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+        // 🔹 Get last reservation for a user (after creating booking)
+public function findLastByUser($userId)
+{
+    $stmt = $this->db->prepare("
+        SELECT * FROM reservations 
+        WHERE user_id = ? 
+        ORDER BY id DESC 
+        LIMIT 1
+    ");
+    $stmt->execute([$userId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// 🔹 Get reservation by id
+public function findById($id)
+{
+    $stmt = $this->db->prepare("SELECT * FROM reservations WHERE id = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// 🔹 Get user info (email + name)
+public function getUser($userId)
+{
+    $stmt = $this->db->prepare("SELECT id, name, email FROM users WHERE id = ?");
+    $stmt->execute([$userId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// 🔹 Get rental / home info
+public function getHome($homeId)
+{
+    $stmt = $this->db->prepare("SELECT * FROM homes WHERE id = ?");
+    $stmt->execute([$homeId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 }
